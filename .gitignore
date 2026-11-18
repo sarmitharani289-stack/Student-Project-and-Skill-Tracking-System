@@ -1,0 +1,24 @@
+# Java compiled files
+*.class
+bin/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node modules
+node_modules/
+
+# Environment secrets
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db

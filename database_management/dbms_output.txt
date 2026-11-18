@@ -1,0 +1,188 @@
+================================================================================
+ VELALAR COLLEGE OF ENGINEERING AND TECHNOLOGY (AUTONOMOUS), ERODE
+ DEPARTMENT OF INFORMATION TECHNOLOGY - REGULATION R2025
+ COURSE: 25ITT31 - DATABASE MANAGEMENT SYSTEMS
+ SCENARIO 2: STUDENT PROJECT AND SKILL TRACKING SYSTEM
+ EXECUTION TIMESTAMP: 2026-11-17 13:30:08
+ REGISTER NUMBERS: 2, 32, 62, 92, L2
+================================================================================
+
+[*] Reset previous database instance: student_project_tracking.db
+[+] Initialized SQLite Relational Database Engine at: C:\Student_Project_and_Skill_Tracking_System\database_management\student_project_tracking.db
+
+--------------------------------------------------------------------------------
+ STEP 1: EXECUTING DATABASE SCHEMA (DDL) CREATION
+--------------------------------------------------------------------------------
+[SUCCESS] All relational tables created successfully:
+   1. Table: Evaluation           | Columns: 11
+   2. Table: Faculty              | Columns: 4
+   3. Table: Milestone            | Columns: 6
+   4. Table: Project              | Columns: 9
+   5. Table: ProjectTechnology    | Columns: 3
+   6. Table: Skill                | Columns: 3
+   7. Table: Student              | Columns: 7
+   8. Table: StudentSkill         | Columns: 5
+
+--------------------------------------------------------------------------------
+ STEP 2: INSERTING POPULATION DATA (DML) - TARGET REGISTER NUMBERS INCLUDED
+--------------------------------------------------------------------------------
+   - Table [Evaluation        ]:  5 records inserted.
+   - Table [Faculty           ]:  4 records inserted.
+   - Table [Milestone         ]: 28 records inserted.
+   - Table [Project           ]:  8 records inserted.
+   - Table [ProjectTechnology ]: 33 records inserted.
+   - Table [Skill             ]: 17 records inserted.
+   - Table [Student           ]:  8 records inserted.
+   - Table [StudentSkill      ]: 33 records inserted.
+[SUCCESS] Comprehensive test dataset populated across all relational entities.
+[SUCCESS] Relational View 'View_StudentProjectSummary' created successfully.
+
+================================================================================
+ STEP 3: EXECUTING ADVANCED SQL QUERIES & ANALYTICAL WORKLOADS
+================================================================================
+
+>>> QUERY 1: Student Project & Faculty Advisor Mapping (INNER & LEFT JOIN)
+--------------------------------------------------------------------------------
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------------+---------------------------+
+| register_number | student_name   | project_title                                   | domain          | project_status | faculty_guide        | faculty_email             |
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------------+---------------------------+
+| 25IT002         | Sarmida S      | Student Project and Skill Tracking System       | Web & Analytics | Completed      | Dr. K. R. Valluvan   | valluvan.kr@vcet.ac.in    |
+| 25IT015         | Ananya B       | Online Examination and Proctoring Portal        | Web Development | Proposed       | Dr. S. Senthil Kumar | senthilkumar.s@vcet.ac.in |
+| 25IT032         | Kavin R        | Automated Disease Prediction from Medical Scans | AI/ML           | In-Progress    | Dr. S. Senthil Kumar | senthilkumar.s@vcet.ac.in |
+| 25IT045         | Gokulnath P    | Voice-Driven Conversational AI Chatbot          | AI/ML           | In-Progress    | Prof. M. Thilagaraj  | thilagaraj.m@vcet.ac.in   |
+| 25IT062         | Pradeep M      | E-Commerce Platform with Microservices          | Cloud & Web     | Completed      | Prof. M. Thilagaraj  | thilagaraj.m@vcet.ac.in   |
+| 25IT078         | Pavithra T     | IoT-Based Agriculture Soil Health Monitor       | IoT & Embedded  | Proposed       | Dr. P. Mythili       | mythili.p@vcet.ac.in      |
+| 25IT092         | Shreya V       | Cloud-Native Distributed File Storage           | Cloud/DevOps    | In-Progress    | Dr. K. R. Valluvan   | valluvan.kr@vcet.ac.in    |
+| 25ITL02         | Dinesh Kumar K | Smart Campus Navigation & Attendance App        | Mobile App      | Completed      | Dr. P. Mythili       | mythili.p@vcet.ac.in      |
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------------+---------------------------+
+
+>>> QUERY 2: Multi-Table Join & Technology Stacks (GROUP_CONCAT)
+--------------------------------------------------------------------------------
++------------+-------------------------------------------------+----------------+----------------------------------------------+
+| project_id | project_title                                   | student_name   | technologies_used                            |
++------------+-------------------------------------------------+----------------+----------------------------------------------+
+| 1          | Student Project and Skill Tracking System       | Sarmida S      | Java, Matplotlib, MySQL, Python, Spring Boot |
+| 2          | Automated Disease Prediction from Medical Scans | Kavin R        | Flask, OpenCV, Python, TensorFlow            |
+| 3          | E-Commerce Platform with Microservices          | Pradeep M      | Docker, MongoDB, Node.js, React.js           |
+| 4          | Cloud-Native Distributed File Storage           | Shreya V       | AWS S3, Docker, Java, MySQL                  |
+| 5          | Smart Campus Navigation & Attendance App        | Dinesh Kumar K | Dart, Firebase, Flutter, SQLite              |
+| 6          | Online Examination and Proctoring Portal        | Ananya B       | MySQL, Node.js, Python, React.js             |
+| 7          | Voice-Driven Conversational AI Chatbot          | Gokulnath P    | FastAPI, HuggingFace, PyTorch, Python        |
+| 8          | IoT-Based Agriculture Soil Health Monitor       | Pavithra T     | MQTT, MySQL, Python, Raspberry Pi            |
++------------+-------------------------------------------------+----------------+----------------------------------------------+
+
+>>> QUERY 3: Milestone Progress & Completion Rate (COUNT, CASE WHEN, ROUND)
+--------------------------------------------------------------------------------
++------------+-------------------------------------------------+----------------+------------------+-----------+---------+---------+--------------+
+| project_id | project_title                                   | student_name   | total_milestones | completed | delayed | pending | progress_pct |
++------------+-------------------------------------------------+----------------+------------------+-----------+---------+---------+--------------+
+| 1          | Student Project and Skill Tracking System       | Sarmida S      | 5                | 5         | 0       | 0       | 100.0        |
+| 3          | E-Commerce Platform with Microservices          | Pradeep M      | 4                | 4         | 0       | 0       | 100.0        |
+| 5          | Smart Campus Navigation & Attendance App        | Dinesh Kumar K | 4                | 4         | 0       | 0       | 100.0        |
+| 2          | Automated Disease Prediction from Medical Scans | Kavin R        | 4                | 2         | 0       | 1       | 50.0         |
+| 4          | Cloud-Native Distributed File Storage           | Shreya V       | 4                | 2         | 1       | 1       | 50.0         |
+| 7          | Voice-Driven Conversational AI Chatbot          | Gokulnath P    | 3                | 1         | 0       | 1       | 33.3         |
+| 6          | Online Examination and Proctoring Portal        | Ananya B       | 2                | 0         | 0       | 2       | 0.0          |
+| 8          | IoT-Based Agriculture Soil Health Monitor       | Pavithra T     | 2                | 0         | 0       | 2       | 0.0          |
++------------+-------------------------------------------------+----------------+------------------+-----------+---------+---------+--------------+
+
+>>> QUERY 4: Popularity Ranking of Project Technologies (GROUP BY & Adoption %)
+--------------------------------------------------------------------------------
++-----------------+-------------+--------------+
+| technology_name | usage_count | adoption_pct |
++-----------------+-------------+--------------+
+| Python          | 5           | 62.5         |
+| MySQL           | 4           | 50.0         |
+| Docker          | 2           | 25.0         |
+| Java            | 2           | 25.0         |
+| Node.js         | 2           | 25.0         |
+| React.js        | 2           | 25.0         |
+| AWS S3          | 1           | 12.5         |
+| Dart            | 1           | 12.5         |
+| FastAPI         | 1           | 12.5         |
+| Firebase        | 1           | 12.5         |
+| Flask           | 1           | 12.5         |
+| Flutter         | 1           | 12.5         |
+| HuggingFace     | 1           | 12.5         |
+| MQTT            | 1           | 12.5         |
+| Matplotlib      | 1           | 12.5         |
+| MongoDB         | 1           | 12.5         |
+| OpenCV          | 1           | 12.5         |
+| PyTorch         | 1           | 12.5         |
+| Raspberry Pi    | 1           | 12.5         |
+| SQLite          | 1           | 12.5         |
+| Spring Boot     | 1           | 12.5         |
+| TensorFlow      | 1           | 12.5         |
++-----------------+-------------+--------------+
+
+>>> QUERY 5: Student Skill Matrix by Proficiency Level (Beginner / Inter / Adv)
+--------------------------------------------------------------------------------
++-----------------+-----------------------------+----------+--------------+----------+----------------+
+| skill_category  | skill_name                  | advanced | intermediate | beginner | total_students |
++-----------------+-----------------------------+----------+--------------+----------+----------------+
+| AI/ML           | Machine Learning            | 1        | 1            | 0        | 2              |
+| AI/ML           | Deep Learning               | 0        | 1            | 0        | 1              |
+| AI/ML           | Natural Language Processing | 0        | 1            | 0        | 1              |
+| Cloud/DevOps    | AWS Cloud                   | 0        | 2            | 0        | 2              |
+| Cloud/DevOps    | Docker & Kubernetes         | 0        | 0            | 1        | 1              |
+| Cybersecurity   | Network Security            | 0        | 0            | 0        | 0              |
+| Database        | MySQL                       | 2        | 2            | 0        | 4              |
+| Database        | MongoDB                     | 0        | 1            | 0        | 1              |
+| Database        | SQLite                      | 0        | 1            | 0        | 1              |
+| Mobile App      | Flutter                     | 1        | 0            | 0        | 1              |
+| Programming     | Java                        | 3        | 1            | 1        | 5              |
+| Programming     | Python                      | 3        | 2            | 0        | 5              |
+| Programming     | C++                         | 0        | 0            | 1        | 1              |
+| Web Development | HTML/CSS/JS                 | 2        | 0            | 1        | 3              |
+| Web Development | Node.js                     | 0        | 1            | 1        | 2              |
+| Web Development | Spring Boot                 | 1        | 1            | 0        | 2              |
+| Web Development | React.js                    | 1        | 0            | 0        | 1              |
++-----------------+-----------------------------+----------+--------------+----------+----------------+
+
+>>> QUERY 6: Evaluation Marks Rubric & Academic Grade Classification (CASE)
+--------------------------------------------------------------------------------
++-----------------+----------------+-------------------------------------------------+--------+-----------+---------+--------+---------+-----------+-----------------+----------------------+
+| register_number | student_name   | project_title                                   | req_20 | design_20 | impl_30 | doc_15 | pres_15 | total_100 | grade           | mentor               |
++-----------------+----------------+-------------------------------------------------+--------+-----------+---------+--------+---------+-----------+-----------------+----------------------+
+| 25IT002         | Sarmida S      | Student Project and Skill Tracking System       | 19.5   | 19.0      | 29.0    | 14.5   | 14.5    | 96.5      | O (Outstanding) | Dr. K. R. Valluvan   |
+| 25ITL02         | Dinesh Kumar K | Smart Campus Navigation & Attendance App        | 19.0   | 19.0      | 28.0    | 14.0   | 15.0    | 95.0      | O (Outstanding) | Dr. P. Mythili       |
+| 25IT062         | Pradeep M      | E-Commerce Platform with Microservices          | 19.0   | 18.0      | 28.5    | 14.0   | 14.0    | 93.5      | O (Outstanding) | Prof. M. Thilagaraj  |
+| 25IT032         | Kavin R        | Automated Disease Prediction from Medical Scans | 18.0   | 18.5      | 26.5    | 13.0   | 13.5    | 89.5      | A+ (Excellent)  | Dr. S. Senthil Kumar |
+| 25IT092         | Shreya V       | Cloud-Native Distributed File Storage           | 17.5   | 17.0      | 24.0    | 12.5   | 13.0    | 84.0      | A+ (Excellent)  | Dr. K. R. Valluvan   |
++-----------------+----------------+-------------------------------------------------+--------+-----------+---------+--------+---------+-----------+-----------------+----------------------+
+
+>>> QUERY 7: Skill Gap Analysis - AI Projects lacking Machine Learning Skill
+--------------------------------------------------------------------------------
++-----------------+--------------+----------------------------------------+--------+
+| register_number | student_name | project_title                          | domain |
++-----------------+--------------+----------------------------------------+--------+
+| 25IT045         | Gokulnath P  | Voice-Driven Conversational AI Chatbot | AI/ML  |
++-----------------+--------------+----------------------------------------+--------+
+
+>>> QUERY 8: Delayed Milestone Audit and Alerting System
+--------------------------------------------------------------------------------
++-----------------+--------------+---------------------------------------+------------------------------------+-----------------+-------------------+--------------------------------------------+
+| register_number | student_name | project_title                         | milestone_name                     | submission_date | completion_status | remarks                                    |
++-----------------+--------------+---------------------------------------+------------------------------------+-----------------+-------------------+--------------------------------------------+
+| 25IT092         | Shreya V     | Cloud-Native Distributed File Storage | AWS Deployment & Benchmark Testing | 2025-03-25      | Delayed           | Cloud budget approval delayed; in progress |
++-----------------+--------------+---------------------------------------+------------------------------------+-----------------+-------------------+--------------------------------------------+
+
+>>> QUERY 9: Querying the Database View (View_StudentProjectSummary)
+--------------------------------------------------------------------------------
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------+
+| register_number | student_name   | project_title                                   | domain          | project_status | marks_obtained |
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------+
+| 25IT002         | Sarmida S      | Student Project and Skill Tracking System       | Web & Analytics | Completed      | 96.5           |
+| 25ITL02         | Dinesh Kumar K | Smart Campus Navigation & Attendance App        | Mobile App      | Completed      | 95.0           |
+| 25IT062         | Pradeep M      | E-Commerce Platform with Microservices          | Cloud & Web     | Completed      | 93.5           |
+| 25IT032         | Kavin R        | Automated Disease Prediction from Medical Scans | AI/ML           | In-Progress    | 89.5           |
+| 25IT092         | Shreya V       | Cloud-Native Distributed File Storage           | Cloud/DevOps    | In-Progress    | 84.0           |
+| 25IT015         | Ananya B       | Online Examination and Proctoring Portal        | Web Development | Proposed       | 0.0            |
+| 25IT045         | Gokulnath P    | Voice-Driven Conversational AI Chatbot          | AI/ML           | In-Progress    | 0.0            |
+| 25IT078         | Pavithra T     | IoT-Based Agriculture Soil Health Monitor       | IoT & Embedded  | Proposed       | 0.0            |
++-----------------+----------------+-------------------------------------------------+-----------------+----------------+----------------+
+
+================================================================================
+ [COMPLETED] DBMS Execution finished successfully with 0 errors.
+ All query execution logs written to: C:\Student_Project_and_Skill_Tracking_System\database_management\dbms_output.txt
+================================================================================
