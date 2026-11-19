@@ -3,7 +3,7 @@
  DEPARTMENT OF INFORMATION TECHNOLOGY - REGULATION R2025
  COURSE: 25ITC31 - FOUNDATIONS OF DATA SCIENCE
  SCENARIO 2: STUDENT PROJECT AND SKILL TRACKING ANALYTICS
- EXECUTION TIMESTAMP: 2026-11-17 13:31:27
+ EXECUTION TIMESTAMP: 2026-11-19 09:47:53
  TARGET REGISTER NUMBERS: 2, 32, 62, 92, L2
 ================================================================================
 
@@ -99,3 +99,66 @@
  [SUCCESS] DATA SCIENCE PIPELINE COMPLETED WITH 0 ERRORS
  Detailed execution transcript saved to: C:\Student_Project_and_Skill_Tracking_System\foundations_of_data_science\data_science_output.txt
 ================================================================================
+
+[SUCCESS] Automated EDA pipeline complete! Output saved to data_science_output.txt
+
+================================================================================
+  FOUNDATIONS OF DATA SCIENCE - INTERACTIVE ANALYTICS WORKBENCH
+  Course: 25ITC31 | VCET B.Tech IT - Regulation R2025
+  Connected Database: student_project_tracking.db
+================================================================================
+  [1] View Dataset Summary & Entity Record Counts
+  [2] Search / Filter Projects by Domain or Status (Manual Input)
+  [3] Inspect Student Skills & Detect Skill Gaps (Manual Input)
+  [4] Manually Enter Rubric Marks & Compute Grade / Statistics
+  [5] Descriptive Statistics (Rubric Distributions & Quartiles)
+  [6] Audit & Verify Generated Visualization Charts (5 PNG Charts)
+  [7] Run Full Automated EDA Pipeline & Update data_science_output.txt
+  [0] Exit Analytics Workbench
+================================================================================
+Enter choice [0-7]: 
+--- VISUALIZATION CHARTS AUDIT ---
+  [1] viz1_project_status_completion_rate.png  :  28.4 KB [AVAILABLE]
+  [2] viz2_popular_technology_stacks.png       :  31.2 KB [AVAILABLE]
+  [3] viz3_skill_proficiency_distribution.png  :  24.9 KB [AVAILABLE]
+  [4] viz4_milestone_progression_status.png    :  25.5 KB [AVAILABLE]
+  [5] viz5_evaluation_marks_breakdown.png      :  31.0 KB [AVAILABLE]
+
+================================================================================
+  FOUNDATIONS OF DATA SCIENCE - INTERACTIVE ANALYTICS WORKBENCH
+  Course: 25ITC31 | VCET B.Tech IT - Regulation R2025
+  Connected Database: student_project_tracking.db
+================================================================================
+  [1] View Dataset Summary & Entity Record Counts
+  [2] Search / Filter Projects by Domain or Status (Manual Input)
+  [3] Inspect Student Skills & Detect Skill Gaps (Manual Input)
+  [4] Manually Enter Rubric Marks & Compute Grade / Statistics
+  [5] Descriptive Statistics (Rubric Distributions & Quartiles)
+  [6] Audit & Verify Generated Visualization Charts (5 PNG Charts)
+  [7] Run Full Automated EDA Pipeline & Update data_science_output.txt
+  [0] Exit Analytics Workbench
+================================================================================
+Enter choice [0-7]: 
+--- VISUALIZATION CHARTS AUDIT ---
+  [1] viz1_project_status_completion_rate.png  :  28.4 KB [AVAILABLE]
+  [2] viz2_popular_technology_stacks.png       :  31.2 KB [AVAILABLE]
+  [3] viz3_skill_proficiency_distribution.png  :  24.9 KB [AVAILABLE]
+  [4] viz4_milestone_progression_status.png    :  25.5 KB [AVAILABLE]
+  [5] viz5_evaluation_marks_breakdown.png      :  31.0 KB [AVAILABLE]
+
+================================================================================
+  FOUNDATIONS OF DATA SCIENCE - INTERACTIVE ANALYTICS WORKBENCH
+  Course: 25ITC31 | VCET B.Tech IT - Regulation R2025
+  Connected Database: student_project_tracking.db
+================================================================================
+  [1] View Dataset Summary & Entity Record Counts
+  [2] Search / Filter Projects by Domain or Status (Manual Input)
+  [3] Inspect Student Skills & Detect Skill Gaps (Manual Input)
+  [4] Manually Enter Rubric Marks & Compute Grade / Statistics
+  [5] Descriptive Statistics (Rubric Distributions & Quartiles)
+  [6] Audit & Verify Generated Visualization Charts (5 PNG Charts)
+  [7] Run Full Automated EDA Pipeline & Update data_science_output.txt
+  [0] Exit Analytics Workbench
+================================================================================
+Enter choice [0-7]: 
+Exiting Data Science Workbench. Goodbye!
