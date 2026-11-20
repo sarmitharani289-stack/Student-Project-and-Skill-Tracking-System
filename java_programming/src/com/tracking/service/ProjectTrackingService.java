@@ -1,3 +1,4 @@
+
 package com.tracking.service;
 
 import com.tracking.exception.InvalidMarkException;
@@ -9,12 +10,36 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectTrackingService {
+
     private final Map<Integer, Student> students = new LinkedHashMap<>();
     private final Map<Integer, Faculty> facultyMembers = new LinkedHashMap<>();
     private final Map<Integer, Skill> skills = new LinkedHashMap<>();
     private final Map<Integer, Project> projects = new LinkedHashMap<>();
 
+    // Add student with duplicate register number validation
     public void addStudent(Student s) {
+
+        if (s == null) {
+            throw new IllegalArgumentException("Student cannot be null.");
+        }
+
+        if (s.getRegisterNumber() == null
+                || s.getRegisterNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Register number cannot be empty.");
+        }
+
+        boolean duplicate = students.values().stream()
+                .anyMatch(existing -> existing.getRegisterNumber()
+                        .trim()
+                        .equalsIgnoreCase(s.getRegisterNumber().trim()));
+
+        if (duplicate) {
+            throw new IllegalArgumentException(
+                    "Register number already exists: "
+                            + s.getRegisterNumber());
+        }
+
         students.put(s.getStudentId(), s);
     }
 
@@ -36,9 +61,12 @@ public class ProjectTrackingService {
 
     public Project getProject(int id) throws ProjectNotFoundException {
         Project p = projects.get(id);
+
         if (p == null) {
-            throw new ProjectNotFoundException("Project with ID " + id + " does not exist.");
+            throw new ProjectNotFoundException(
+                    "Project with ID " + id + " does not exist.");
         }
+
         return p;
     }
 
@@ -54,21 +82,23 @@ public class ProjectTrackingService {
         return Collections.unmodifiableCollection(skills.values());
     }
 
-    // Java 8+ Stream API: Filter projects by domain
+    // Filter projects by domain using Stream API
     public List<Project> getProjectsByDomain(String domain) {
         return projects.values().stream()
-                .filter(p -> p.getDomain().toLowerCase().contains(domain.toLowerCase()))
+                .filter(p -> p.getDomain().toLowerCase()
+                        .contains(domain.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
-    // Java 8+ Stream API: Get completed projects
+    // Get completed projects
     public List<Project> getCompletedProjects() {
         return projects.values().stream()
-                .filter(p -> "Completed".equalsIgnoreCase(p.getStatus()) || p.getProgress() >= 100.0)
+                .filter(p -> "Completed".equalsIgnoreCase(p.getStatus())
+                        || p.getProgress() >= 100.0)
                 .collect(Collectors.toList());
     }
 
-    // Java 8+ Stream API: Compute average evaluation marks
+    // Calculate average evaluation score
     public double getAverageEvaluationScore() {
         return projects.values().stream()
                 .filter(p -> p.getEvaluation() != null)
@@ -77,47 +107,70 @@ public class ProjectTrackingService {
                 .orElse(0.0);
     }
 
-    // Skill Gap Analysis: Identify students who have projects in a domain but lack corresponding skills
+    // Identify skill gaps
     public Map<String, List<String>> identifySkillGaps() {
+
         Map<String, List<String>> gaps = new LinkedHashMap<>();
+
         for (Student s : students.values()) {
+
             if (s.getProject() != null) {
+
                 String domain = s.getProject().getDomain().toLowerCase();
+
                 Set<String> studentSkillNames = s.getSkills().stream()
                         .map(ss -> ss.getSkill().getSkillName().toLowerCase())
                         .collect(Collectors.toSet());
 
                 List<String> missing = new ArrayList<>();
+
                 if (domain.contains("ai") || domain.contains("ml")) {
-                    if (!studentSkillNames.contains("machine learning") && !studentSkillNames.contains("python")) {
+                    if (!studentSkillNames.contains("machine learning")
+                            && !studentSkillNames.contains("python")) {
                         missing.add("Machine Learning / Python");
                     }
                 }
+
                 if (domain.contains("web")) {
-                    if (!studentSkillNames.contains("html/css/js") && !studentSkillNames.contains("react.js")) {
+                    if (!studentSkillNames.contains("html/css/js")
+                            && !studentSkillNames.contains("react.js")) {
                         missing.add("HTML/CSS/JS or Modern Frontend");
                     }
                 }
+
                 if (domain.contains("cloud")) {
-                    if (!studentSkillNames.contains("docker & kubernetes") && !studentSkillNames.contains("aws cloud")) {
+                    if (!studentSkillNames.contains("docker & kubernetes")
+                            && !studentSkillNames.contains("aws cloud")) {
                         missing.add("Cloud / Containerization (Docker/AWS)");
                     }
                 }
+
                 if (!missing.isEmpty()) {
-                    gaps.put(s.getStudentName() + " (" + s.getRegisterNumber() + ")", missing);
+                    gaps.put(
+                            s.getStudentName() + " (" + s.getRegisterNumber() + ")",
+                            missing);
                 }
             }
         }
+
         return gaps;
     }
 
-    // Popularity ranking of technologies used
+    // Technology usage ranking
     public Map<String, Long> getTechnologyUsageCounts() {
+
         return projects.values().stream()
                 .flatMap(p -> p.getTechnologies().stream())
-                .collect(Collectors.groupingBy(ProjectTechnology::getTechnologyName, Collectors.counting()))
-                .entrySet().stream()
+                .collect(Collectors.groupingBy(
+                        ProjectTechnology::getTechnologyName,
+                        Collectors.counting()))
+                .entrySet()
+                .stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
     }
 }

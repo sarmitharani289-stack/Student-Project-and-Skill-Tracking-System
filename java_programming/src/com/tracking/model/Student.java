@@ -1,3 +1,4 @@
+
 package com.tracking.model;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ public class Student {
     private String email;
     private String phone;
     private List<StudentSkill> skills;
-    private Project project;
+    private List<Project> projects = new ArrayList<>();
 
-    public Student(int studentId, String registerNumber, String studentName, 
-                   String department, int yearOfStudy, String email, String phone) {
+    public Student(int studentId, String registerNumber, String studentName,
+            String department, int yearOfStudy, String email, String phone) {
         this.studentId = studentId;
         this.registerNumber = registerNumber;
         this.studentName = studentName;
@@ -24,6 +25,7 @@ public class Student {
         this.email = email;
         this.phone = phone;
         this.skills = new ArrayList<>();
+        this.projects = new ArrayList<>();
     }
 
     public int getStudentId() {
@@ -58,24 +60,50 @@ public class Student {
         return skills;
     }
 
+    // Get all projects registered by the student
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    // Get the most recently registered project
     public Project getProject() {
-        return project;
+        if (projects.isEmpty()) {
+            return null;
+        }
+        return projects.get(projects.size() - 1);
     }
 
     public void addSkill(StudentSkill skill) {
         skills.add(skill);
     }
 
+    // Register multiple projects without replacing previous projects
     public void registerProject(Project project) {
-        this.project = project;
+        if (project != null) {
+            boolean exists = projects.stream()
+                    .anyMatch(p -> p.getProjectId() == project.getProjectId());
+
+            if (!exists) {
+                projects.add(project);
+            }
+        }
     }
 
     public void viewProgress() {
-        if (project != null) {
-            System.out.printf("Student %s [%s] -> Project: %s, Progress: %.1f%%\n",
-                    studentName, registerNumber, project.getTitle(), project.getProgress());
+        if (!projects.isEmpty()) {
+            for (Project project : projects) {
+                System.out.printf(
+                        "Student %s [%s] -> Project: %s, Progress: %.1f%%\n",
+                        studentName,
+                        registerNumber,
+                        project.getTitle(),
+                        project.getProgress());
+            }
         } else {
-            System.out.printf("Student %s [%s] -> No project registered currently.\n", studentName, registerNumber);
+            System.out.printf(
+                    "Student %s [%s] -> No project registered currently.\n",
+                    studentName,
+                    registerNumber);
         }
     }
 
@@ -86,6 +114,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return String.format("%s (%s, Year %d, %s)", studentName, registerNumber, yearOfStudy, department);
+        return String.format("%s (%s, Year %d, %s)",
+                studentName, registerNumber, yearOfStudy, department);
     }
 }

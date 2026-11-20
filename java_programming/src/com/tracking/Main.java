@@ -46,6 +46,7 @@ public class Main {
                 originalOut.write(b);
                 consoleCapture.write(b);
             }
+
             @Override
             public void write(byte[] b, int off, int len) {
                 originalOut.write(b, off, len);
@@ -57,12 +58,9 @@ public class Main {
 
     private static void runInteractiveMenu() {
         Scanner scanner = new Scanner(System.in);
+
         while (true) {
             System.out.println("\n================================================================================");
-            System.out.println("  STUDENT PROJECT AND SKILL TRACKING SYSTEM - INTERACTIVE CONSOLE");
-            System.out.println("  VCET B.Tech IT - Regulation R2025 | 25ITT32 Java Programming");
-            System.out.println("  Target Register Numbers: 2, 32, 62, 92, L2");
-            System.out.println("================================================================================");
             System.out.println("  [1] Register a New Student (Manual Input)");
             System.out.println("  [2] Add / Map Technical Skill to Student (Manual Input)");
             System.out.println("  [3] Register a New Project for Student (Manual Input)");
@@ -78,6 +76,7 @@ public class Main {
             System.out.print("Enter your choice [0-10]: ");
 
             String input = scanner.nextLine().trim();
+
             if ("0".equals(input)) {
                 System.out.println("\nExiting Student Project & Skill Tracking System. Goodbye!");
                 break;
@@ -115,7 +114,8 @@ public class Main {
                     setupDualOutput();
                     runAutomatedDemonstration(service);
                     saveOutputsAndScreenshot();
-                    System.out.println("\n[SUCCESS] Demo complete! Outputs updated in java_output.txt and java_execution_screenshot.png");
+                    System.out.println(
+                            "\n[SUCCESS] Demo complete! Outputs updated in java_output.txt and java_execution_screenshot.png");
                     break;
                 default:
                     System.out.println("[!] Invalid choice. Please select an option between 0 and 10.");
@@ -125,34 +125,76 @@ public class Main {
 
     private static void handleRegisterStudent(Scanner scanner) {
         System.out.println("\n--- [MANUAL INPUT] REGISTER NEW STUDENT ---");
+
         try {
             System.out.print("Enter Register Number (e.g., 25IT002): ");
             String regNo = scanner.nextLine().trim();
+
             if (regNo.isEmpty()) {
                 System.out.println("[!] Register number cannot be empty.");
+                return;
+            }
+
+            // Check duplicate register number
+            boolean exists = service.getAllStudents().stream()
+                    .anyMatch(s -> s.getRegisterNumber().equalsIgnoreCase(regNo));
+
+            if (exists) {
+                System.out.println("[ERROR] Register number already exists. Please enter a unique register number.");
                 return;
             }
 
             System.out.print("Enter Student Full Name: ");
             String name = scanner.nextLine().trim();
 
+            if (name.isEmpty()) {
+                System.out.println("[!] Student name cannot be empty.");
+                return;
+            }
+
             System.out.print("Enter Department (Default: Information Technology): ");
             String dept = scanner.nextLine().trim();
-            if (dept.isEmpty()) dept = "Information Technology";
+
+            if (dept.isEmpty()) {
+                dept = "Information Technology";
+            }
 
             System.out.print("Enter Year of Study (1-4): ");
             int year = Integer.parseInt(scanner.nextLine().trim());
 
+            if (year < 1 || year > 4) {
+                System.out.println("[!] Invalid year. Enter a year between 1 and 4.");
+                return;
+            }
+
             System.out.print("Enter Student Email: ");
             String email = scanner.nextLine().trim();
+
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                System.out.println("[!] Invalid email format. Please enter a valid email.");
+                return;
+            }
 
             System.out.print("Enter Phone Number: ");
             String phone = scanner.nextLine().trim();
 
+            if (!phone.matches("[0-9]{10}")) {
+                System.out.println("[!] Phone number must contain exactly 10 digits.");
+                return;
+            }
+
             int newId = service.getAllStudents().size() + 1;
-            Student newStudent = new Student(newId, regNo, name, dept, year, email, phone);
+
+            Student newStudent = new Student(
+                    newId, regNo, name, dept, year, email, phone);
+
             service.addStudent(newStudent);
-            System.out.println("[SUCCESS] Student registered successfully with ID #" + newId + ": " + newStudent);
+
+            System.out.println("[SUCCESS] Student registered successfully with ID #"
+                    + newId + ": " + newStudent);
+
+        } catch (NumberFormatException e) {
+            System.out.println("[!] Invalid year. Please enter a number between 1 and 4.");
         } catch (Exception e) {
             System.out.println("[ERROR] Failed to register student: " + e.getMessage());
         }
@@ -175,13 +217,16 @@ public class Main {
             System.out.print("Enter Skill Name (e.g. Java, Python, React.js, Docker): ");
             String skillName = scanner.nextLine().trim();
 
-            System.out.print("Enter Skill Category (Programming, Web Development, Database, AI/ML, Cloud/DevOps, Mobile App): ");
+            System.out.print(
+                    "Enter Skill Category (Programming, Web Development, Database, AI/ML, Cloud/DevOps, Mobile App): ");
             String cat = scanner.nextLine().trim();
-            if (cat.isEmpty()) cat = "Programming";
+            if (cat.isEmpty())
+                cat = "Programming";
 
             System.out.print("Enter Proficiency Level (Beginner / Intermediate / Advanced): ");
             String prof = scanner.nextLine().trim();
-            if (!prof.equalsIgnoreCase("Beginner") && !prof.equalsIgnoreCase("Intermediate") && !prof.equalsIgnoreCase("Advanced")) {
+            if (!prof.equalsIgnoreCase("Beginner") && !prof.equalsIgnoreCase("Intermediate")
+                    && !prof.equalsIgnoreCase("Advanced")) {
                 prof = "Intermediate";
             }
 
@@ -192,7 +237,8 @@ public class Main {
             int studentSkillId = student.getSkills().size() + 1;
             StudentSkill ss = new StudentSkill(studentSkillId, skill, prof, LocalDate.now());
             student.addSkill(ss);
-            System.out.println("[SUCCESS] Mapped skill '" + skillName + "' (" + prof + ") to student " + student.getStudentName());
+            System.out.println(
+                    "[SUCCESS] Mapped skill '" + skillName + "' (" + prof + ") to student " + student.getStudentName());
         } catch (Exception e) {
             System.out.println("[ERROR] Failed to map skill: " + e.getMessage());
         }
@@ -226,21 +272,27 @@ public class Main {
 
             int pId = service.getAllProjects().size() + 1;
             Faculty guide = new Faculty(1, "Dr. K. R. Valluvan", "valluvan.kr@vcet.ac.in", "IT");
-            Project project = new Project(pId, title, domain, desc, LocalDate.now(), LocalDate.now().plusMonths(3), "In-Progress", guide);
+            Project project = new Project(pId, title, domain, desc, LocalDate.now(), LocalDate.now().plusMonths(3),
+                    "In-Progress", guide);
 
             for (String t : techInput.split(",")) {
                 String trimmed = t.trim();
-                if (!trimmed.isEmpty()) project.addTechnology(trimmed);
+                if (!trimmed.isEmpty())
+                    project.addTechnology(trimmed);
             }
 
             // Default initial milestones
-            project.addMilestone(new Milestone(1, "Requirements & SRS", LocalDate.now().plusWeeks(2), "Completed", "Approved"));
-            project.addMilestone(new Milestone(2, "Design & ER Modeling", LocalDate.now().plusWeeks(4), "In-Progress", "In progress"));
-            project.addMilestone(new Milestone(3, "Implementation", LocalDate.now().plusWeeks(8), "Pending", "Pending"));
+            project.addMilestone(
+                    new Milestone(1, "Requirements & SRS", LocalDate.now().plusWeeks(2), "Completed", "Approved"));
+            project.addMilestone(new Milestone(2, "Design & ER Modeling", LocalDate.now().plusWeeks(4), "In-Progress",
+                    "In progress"));
+            project.addMilestone(
+                    new Milestone(3, "Implementation", LocalDate.now().plusWeeks(8), "Pending", "Pending"));
 
             student.registerProject(project);
             service.addProject(project);
-            System.out.println("[SUCCESS] Project registered successfully with ID #" + pId + " for " + student.getStudentName());
+            System.out.println(
+                    "[SUCCESS] Project registered successfully with ID #" + pId + " for " + student.getStudentName());
         } catch (Exception e) {
             System.out.println("[ERROR] Failed to register project: " + e.getMessage());
         }
@@ -265,7 +317,8 @@ public class Main {
             int mId = project.getMilestones().size() + 1;
             Milestone m = new Milestone(mId, mName, LocalDate.now().plusWeeks(2), status, remarks);
             project.addMilestone(m);
-            System.out.printf("[SUCCESS] Milestone '%s' added. Current Project Progress: %.1f%%\n", mName, project.getProgress());
+            System.out.printf("[SUCCESS] Milestone '%s' added. Current Project Progress: %.1f%%\n", mName,
+                    project.getProgress());
         } catch (Exception e) {
             System.out.println("[ERROR] Milestone update failed: " + e.getMessage());
         }
@@ -294,7 +347,8 @@ public class Main {
             System.out.print("  * Presentation & Viva Marks (Max 15): ");
             float pre = Float.parseFloat(scanner.nextLine().trim());
 
-            Faculty evaluator = project.getGuide() != null ? project.getGuide() : new Faculty(1, "Dr. K. R. Valluvan", "valluvan.kr@vcet.ac.in", "IT");
+            Faculty evaluator = project.getGuide() != null ? project.getGuide()
+                    : new Faculty(1, "Dr. K. R. Valluvan", "valluvan.kr@vcet.ac.in", "IT");
             Evaluation eval = new Evaluation(pId, evaluator, req, des, imp, doc, pre, LocalDate.now());
             project.setEvaluation(eval);
 
@@ -302,7 +356,8 @@ public class Main {
                 project.setStatus("Completed");
             }
 
-            System.out.printf("[SUCCESS] Evaluation Recorded -> Total: %.1f/100 | Grade: %s\n", eval.getTotalMarks(), eval.getGrade());
+            System.out.printf("[SUCCESS] Evaluation Recorded -> Total: %.1f/100 | Grade: %s\n", eval.getTotalMarks(),
+                    eval.getGrade());
         } catch (InvalidMarkException e) {
             System.out.println("[VALIDATION ERROR] " + e.getMessage());
         } catch (Exception e) {
@@ -314,17 +369,19 @@ public class Main {
         System.out.println("\n--------------------------------------------------------------------------------");
         System.out.println(" STUDENT DIRECTORY AND ASSIGNED TECHNICAL SKILLS");
         System.out.println("--------------------------------------------------------------------------------");
-        System.out.printf("%-10s %-16s %-6s %-12s %s\n", "REG NO", "STUDENT NAME", "YEAR", "DEPARTMENT", "ACQUIRED SKILLS (PROFICIENCY)");
+        System.out.printf("%-10s %-16s %-6s %-12s %s\n", "REG NO", "STUDENT NAME", "YEAR", "DEPARTMENT",
+                "ACQUIRED SKILLS (PROFICIENCY)");
         System.out.println("--------------------------------------------------------------------------------");
         for (Student s : service.getAllStudents()) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < s.getSkills().size(); i++) {
                 StudentSkill ss = s.getSkills().get(i);
                 sb.append(ss.getSkill().getSkillName()).append(" (").append(ss.getProficiencyLevel()).append(")");
-                if (i < s.getSkills().size() - 1) sb.append(", ");
+                if (i < s.getSkills().size() - 1)
+                    sb.append(", ");
             }
             String skillList = sb.length() > 0 ? sb.toString() : "[No registered skills]";
-            System.out.printf("%-10s %-16s %-6d %-12s %s\n", 
+            System.out.printf("%-10s %-16s %-6d %-12s %s\n",
                     s.getRegisterNumber(), s.getStudentName(), s.getYearOfStudy(), "IT", skillList);
         }
     }
@@ -333,39 +390,74 @@ public class Main {
         System.out.println("\n--------------------------------------------------------------------------------");
         System.out.println(" REGISTERED STUDENT PROJECTS & MILESTONE PROGRESS TRACKING");
         System.out.println("--------------------------------------------------------------------------------");
-        System.out.printf("%-4s %-10s %-38s %-16s %-10s %-8s\n", "ID", "REG NO", "PROJECT TITLE", "DOMAIN", "STATUS", "PROGRESS");
+
+        System.out.printf("%-4s %-10s %-38s %-16s %-10s %-8s\n",
+                "ID", "REG NO", "PROJECT TITLE", "DOMAIN", "STATUS", "PROGRESS");
+
         System.out.println("--------------------------------------------------------------------------------");
+
         for (Project p : service.getAllProjects()) {
-            Student owner = service.getAllStudents().stream()
-                    .filter(st -> st.getProject() != null && st.getProject().getProjectId() == p.getProjectId())
-                    .findFirst().orElse(null);
+            Student owner = null;
+
+            for (Student st : service.getAllStudents()) {
+                boolean hasProject = st.getProjects().stream()
+                        .anyMatch(pr -> pr.getProjectId() == p.getProjectId());
+
+                if (hasProject) {
+                    owner = st;
+                    break;
+                }
+            }
+
             String reg = owner != null ? owner.getRegisterNumber() : "N/A";
+
             System.out.printf("%-4d %-10s %-38s %-16s %-10s %6.1f%%\n",
-                    p.getProjectId(), reg, 
-                    p.getTitle().length() > 36 ? p.getTitle().substring(0, 35) + "..." : p.getTitle(),
-                    p.getDomain(), p.getStatus(), p.getProgress());
+                    p.getProjectId(),
+                    reg,
+                    p.getTitle().length() > 36
+                            ? p.getTitle().substring(0, 35) + "..."
+                            : p.getTitle(),
+                    p.getDomain(),
+                    p.getStatus(),
+                    p.getProgress());
         }
     }
 
     private static void displayEvaluations() {
         System.out.println("\n--------------------------------------------------------------------------------");
-        System.out.println(" COMPONENT-WISE PROJECT EVALUATION RESULTS & GRADES");
+        System.out.println(" PROJECT EVALUATION MARKS & GRADES");
         System.out.println("--------------------------------------------------------------------------------");
-        System.out.printf("%-10s %-16s %-6s %-6s %-6s %-6s %-6s %-7s %-16s %s\n", 
-                "REG NO", "STUDENT NAME", "REQ(20)", "DES(20)", "IMP(30)", "DOC(15)", "PRE(15)", "TOTAL", "GRADE", "EVALUATOR");
+
+        System.out.printf("%-4s %-10s %-38s %-10s %-10s\n",
+                "ID", "REG NO", "PROJECT TITLE", "TOTAL", "GRADE");
+
         System.out.println("--------------------------------------------------------------------------------");
+
         for (Project p : service.getAllProjects()) {
             if (p.getEvaluation() != null) {
                 Evaluation ev = p.getEvaluation();
-                Student st = service.getAllStudents().stream()
-                        .filter(s -> s.getProject() != null && s.getProject().getProjectId() == p.getProjectId())
-                        .findFirst().orElse(null);
-                String reg = st != null ? st.getRegisterNumber() : "N/A";
-                String name = st != null ? st.getStudentName() : "N/A";
-                System.out.printf("%-10s %-16s %6.1f %6.1f %6.1f %6.1f %6.1f %7.1f %-16s %s\n",
-                        reg, name, ev.getRequirementAnalysisMarks(), ev.getDesignMarks(),
-                        ev.getImplementationMarks(), ev.getDocumentationMarks(),
-                        ev.getPresentationMarks(), ev.getTotalMarks(), ev.getGrade(), ev.getEvaluator().getFacultyName());
+                Student owner = null;
+
+                for (Student s : service.getAllStudents()) {
+                    boolean hasProject = s.getProjects().stream()
+                            .anyMatch(pr -> pr.getProjectId() == p.getProjectId());
+
+                    if (hasProject) {
+                        owner = s;
+                        break;
+                    }
+                }
+
+                String reg = owner != null ? owner.getRegisterNumber() : "N/A";
+
+                System.out.printf("%-4d %-10s %-38s %-10.1f %-10s\n",
+                        p.getProjectId(),
+                        reg,
+                        p.getTitle().length() > 36
+                                ? p.getTitle().substring(0, 35) + "..."
+                                : p.getTitle(),
+                        ev.getTotalMarks(),
+                        ev.getGrade());
             }
         }
     }
@@ -389,7 +481,10 @@ public class Main {
         Faculty f2 = new Faculty(2, "Dr. S. Senthil Kumar", "senthilkumar.s@vcet.ac.in", "Information Technology");
         Faculty f3 = new Faculty(3, "Prof. M. Thilagaraj", "thilagaraj.m@vcet.ac.in", "Information Technology");
         Faculty f4 = new Faculty(4, "Dr. P. Mythili", "mythili.p@vcet.ac.in", "Information Technology");
-        service.addFaculty(f1); service.addFaculty(f2); service.addFaculty(f3); service.addFaculty(f4);
+        service.addFaculty(f1);
+        service.addFaculty(f2);
+        service.addFaculty(f3);
+        service.addFaculty(f4);
 
         Skill sJava = new Skill(1, "Java", "Programming");
         Skill sPython = new Skill(2, "Python", "Programming");
@@ -407,17 +502,26 @@ public class Main {
         Skill sDocker = new Skill(14, "Docker & Kubernetes", "Cloud/DevOps");
         Skill sFlutter = new Skill(16, "Flutter", "Mobile App");
 
-        Arrays.asList(sJava, sPython, sCPP, sWeb, sReact, sSpring, sNode, sMySQL, sMongo, sSQLite, sML, sDL, sAWS, sDocker, sFlutter)
+        Arrays.asList(sJava, sPython, sCPP, sWeb, sReact, sSpring, sNode, sMySQL, sMongo, sSQLite, sML, sDL, sAWS,
+                sDocker, sFlutter)
                 .forEach(service::addSkill);
 
-        Student st1 = new Student(1, "25IT002", "Sarmida S", "Information Technology", 3, "sarmida.25it002@vcet.ac.in", "9842100002");
-        Student st2 = new Student(2, "25IT032", "Kavin R", "Information Technology", 3, "kavin.25it032@vcet.ac.in", "9842100032");
-        Student st3 = new Student(3, "25IT062", "Pradeep M", "Information Technology", 3, "pradeep.25it062@vcet.ac.in", "9842100062");
-        Student st4 = new Student(4, "25IT092", "Shreya V", "Information Technology", 3, "shreya.25it092@vcet.ac.in", "9842100092");
-        Student st5 = new Student(5, "25ITL02", "Dinesh Kumar K", "Information Technology", 3, "dinesh.25itl02@vcet.ac.in", "9842100102");
-        Student st6 = new Student(6, "25IT015", "Ananya B", "Information Technology", 3, "ananya.25it015@vcet.ac.in", "9842100015");
-        Student st7 = new Student(7, "25IT045", "Gokulnath P", "Information Technology", 3, "gokul.25it045@vcet.ac.in", "9842100045");
-        Student st8 = new Student(8, "25IT078", "Pavithra T", "Information Technology", 3, "pavithra.25it078@vcet.ac.in", "9842100078");
+        Student st1 = new Student(1, "25IT002", "Sarmida S", "Information Technology", 3, "sarmida.25it002@vcet.ac.in",
+                "9842100002");
+        Student st2 = new Student(2, "25IT032", "Kavin R", "Information Technology", 3, "kavin.25it032@vcet.ac.in",
+                "9842100032");
+        Student st3 = new Student(3, "25IT062", "Pradeep M", "Information Technology", 3, "pradeep.25it062@vcet.ac.in",
+                "9842100062");
+        Student st4 = new Student(4, "25IT092", "Shreya V", "Information Technology", 3, "shreya.25it092@vcet.ac.in",
+                "9842100092");
+        Student st5 = new Student(5, "25ITL02", "Dinesh Kumar K", "Information Technology", 3,
+                "dinesh.25itl02@vcet.ac.in", "9842100102");
+        Student st6 = new Student(6, "25IT015", "Ananya B", "Information Technology", 3, "ananya.25it015@vcet.ac.in",
+                "9842100015");
+        Student st7 = new Student(7, "25IT045", "Gokulnath P", "Information Technology", 3, "gokul.25it045@vcet.ac.in",
+                "9842100045");
+        Student st8 = new Student(8, "25IT078", "Pavithra T", "Information Technology", 3,
+                "pavithra.25it078@vcet.ac.in", "9842100078");
 
         st1.addSkill(new StudentSkill(1, sJava, "Advanced", LocalDate.of(2024, 3, 15)));
         st1.addSkill(new StudentSkill(2, sPython, "Advanced", LocalDate.of(2024, 6, 20)));
@@ -449,67 +553,119 @@ public class Main {
         Project p1 = new Project(1, "Student Project and Skill Tracking System", "Web & Analytics",
                 "Monitors student projects, technical skill matrices, milestones, and provides Python visualizations.",
                 LocalDate.of(2025, 1, 5), LocalDate.of(2025, 4, 15), "Completed", f1);
-        p1.addTechnology("Java"); p1.addTechnology("Spring Boot"); p1.addTechnology("MySQL"); p1.addTechnology("Python"); p1.addTechnology("Matplotlib");
-        p1.addMilestone(new Milestone(1, "SRS and Requirements Engineering", LocalDate.of(2025, 1, 25), "Completed", "Approved"));
-        p1.addMilestone(new Milestone(2, "System Architecture & ER Design", LocalDate.of(2025, 2, 15), "Completed", "Verified 3NF"));
-        p1.addMilestone(new Milestone(3, "Core Java Business Logic Implementation", LocalDate.of(2025, 3, 10), "Completed", "Classes & Threads"));
-        p1.addMilestone(new Milestone(4, "Python Analytics & Visualization", LocalDate.of(2025, 3, 28), "Completed", "5 Charts rendered"));
-        p1.addMilestone(new Milestone(5, "Final Testing and Project Viva", LocalDate.of(2025, 4, 10), "Completed", "100% test pass"));
-        try { p1.setEvaluation(new Evaluation(1, f1, 19.5f, 19.0f, 29.0f, 14.5f, 14.5f, LocalDate.of(2025, 4, 12))); } catch (Exception ignored) {}
-        st1.registerProject(p1); service.addProject(p1);
+        p1.addTechnology("Java");
+        p1.addTechnology("Spring Boot");
+        p1.addTechnology("MySQL");
+        p1.addTechnology("Python");
+        p1.addTechnology("Matplotlib");
+        p1.addMilestone(new Milestone(1, "SRS and Requirements Engineering", LocalDate.of(2025, 1, 25), "Completed",
+                "Approved"));
+        p1.addMilestone(new Milestone(2, "System Architecture & ER Design", LocalDate.of(2025, 2, 15), "Completed",
+                "Verified 3NF"));
+        p1.addMilestone(new Milestone(3, "Core Java Business Logic Implementation", LocalDate.of(2025, 3, 10),
+                "Completed", "Classes & Threads"));
+        p1.addMilestone(new Milestone(4, "Python Analytics & Visualization", LocalDate.of(2025, 3, 28), "Completed",
+                "5 Charts rendered"));
+        p1.addMilestone(new Milestone(5, "Final Testing and Project Viva", LocalDate.of(2025, 4, 10), "Completed",
+                "100% test pass"));
+        try {
+            p1.setEvaluation(new Evaluation(1, f1, 19.5f, 19.0f, 29.0f, 14.5f, 14.5f, LocalDate.of(2025, 4, 12)));
+        } catch (Exception ignored) {
+        }
+        st1.registerProject(p1);
+        service.addProject(p1);
 
         Project p2 = new Project(2, "Automated Disease Prediction from Medical Scans", "AI/ML",
                 "Deep learning CNN model for diagnosing chest X-rays with real-time patient report generation.",
                 LocalDate.of(2025, 1, 10), LocalDate.of(2025, 4, 20), "In-Progress", f2);
-        p2.addTechnology("Python"); p2.addTechnology("TensorFlow"); p2.addTechnology("Flask");
-        p2.addMilestone(new Milestone(6, "Dataset Collection and Augmentation", LocalDate.of(2025, 1, 28), "Completed", "5k curated"));
-        p2.addMilestone(new Milestone(7, "CNN Architecture & Training", LocalDate.of(2025, 2, 25), "Completed", "94% accuracy"));
-        p2.addMilestone(new Milestone(8, "Web UI & Diagnostic Inference", LocalDate.of(2025, 3, 20), "In-Progress", "Flask integration"));
-        p2.addMilestone(new Milestone(9, "Clinical Validation and Viva", LocalDate.of(2025, 4, 18), "Pending", "Doctor consult"));
-        try { p2.setEvaluation(new Evaluation(2, f2, 18.0f, 18.5f, 26.5f, 13.0f, 13.5f, LocalDate.of(2025, 4, 5))); } catch (Exception ignored) {}
-        st2.registerProject(p2); service.addProject(p2);
+        p2.addTechnology("Python");
+        p2.addTechnology("TensorFlow");
+        p2.addTechnology("Flask");
+        p2.addMilestone(new Milestone(6, "Dataset Collection and Augmentation", LocalDate.of(2025, 1, 28), "Completed",
+                "5k curated"));
+        p2.addMilestone(new Milestone(7, "CNN Architecture & Training", LocalDate.of(2025, 2, 25), "Completed",
+                "94% accuracy"));
+        p2.addMilestone(new Milestone(8, "Web UI & Diagnostic Inference", LocalDate.of(2025, 3, 20), "In-Progress",
+                "Flask integration"));
+        p2.addMilestone(new Milestone(9, "Clinical Validation and Viva", LocalDate.of(2025, 4, 18), "Pending",
+                "Doctor consult"));
+        try {
+            p2.setEvaluation(new Evaluation(2, f2, 18.0f, 18.5f, 26.5f, 13.0f, 13.5f, LocalDate.of(2025, 4, 5)));
+        } catch (Exception ignored) {
+        }
+        st2.registerProject(p2);
+        service.addProject(p2);
 
         Project p3 = new Project(3, "E-Commerce Platform with Microservices", "Cloud & Web",
                 "High-throughput online shopping portal built with React, Node.js microservices, and Docker containers.",
                 LocalDate.of(2025, 1, 8), LocalDate.of(2025, 4, 18), "Completed", f3);
-        p3.addTechnology("React.js"); p3.addTechnology("Node.js"); p3.addTechnology("MongoDB"); p3.addTechnology("Docker");
-        p3.addMilestone(new Milestone(10, "Microservices Architecture Design", LocalDate.of(2025, 1, 30), "Completed", "API gateway"));
-        p3.addMilestone(new Milestone(11, "Cart & Catalog Service Coding", LocalDate.of(2025, 2, 20), "Completed", "Docker ready"));
-        p3.addMilestone(new Milestone(12, "Payment Gateway Integration", LocalDate.of(2025, 3, 15), "Completed", "Stripe sandbox"));
-        p3.addMilestone(new Milestone(13, "Load Testing and Submission", LocalDate.of(2025, 4, 12), "Completed", "1k req/s verified"));
-        try { p3.setEvaluation(new Evaluation(3, f3, 19.0f, 18.0f, 28.5f, 14.0f, 14.0f, LocalDate.of(2025, 4, 14))); } catch (Exception ignored) {}
-        st3.registerProject(p3); service.addProject(p3);
+        p3.addTechnology("React.js");
+        p3.addTechnology("Node.js");
+        p3.addTechnology("MongoDB");
+        p3.addTechnology("Docker");
+        p3.addMilestone(new Milestone(10, "Microservices Architecture Design", LocalDate.of(2025, 1, 30), "Completed",
+                "API gateway"));
+        p3.addMilestone(new Milestone(11, "Cart & Catalog Service Coding", LocalDate.of(2025, 2, 20), "Completed",
+                "Docker ready"));
+        p3.addMilestone(new Milestone(12, "Payment Gateway Integration", LocalDate.of(2025, 3, 15), "Completed",
+                "Stripe sandbox"));
+        p3.addMilestone(new Milestone(13, "Load Testing and Submission", LocalDate.of(2025, 4, 12), "Completed",
+                "1k req/s verified"));
+        try {
+            p3.setEvaluation(new Evaluation(3, f3, 19.0f, 18.0f, 28.5f, 14.0f, 14.0f, LocalDate.of(2025, 4, 14)));
+        } catch (Exception ignored) {
+        }
+        st3.registerProject(p3);
+        service.addProject(p3);
 
         Project p4 = new Project(4, "Cloud-Native Distributed File Storage", "Cloud/DevOps",
                 "Secure peer-to-peer cloud file sharing service featuring end-to-end AES-256 encryption.",
                 LocalDate.of(2025, 1, 12), LocalDate.of(2025, 4, 25), "In-Progress", f1);
-        p4.addTechnology("Java"); p4.addTechnology("AWS S3"); p4.addTechnology("Docker"); p4.addTechnology("MySQL");
-        p4.addMilestone(new Milestone(14, "Cryptographic Protocol Specification", LocalDate.of(2025, 2, 5), "Completed", "AES verified"));
-        p4.addMilestone(new Milestone(15, "Storage Node Replication Engine", LocalDate.of(2025, 3, 1), "Completed", "Raft consensus"));
-        p4.addMilestone(new Milestone(16, "AWS Deployment & Benchmark", LocalDate.of(2025, 3, 25), "Delayed", "Budget approved"));
-        p4.addMilestone(new Milestone(17, "Documentation and Viva", LocalDate.of(2025, 4, 20), "Pending", "Draft ready"));
-        try { p4.setEvaluation(new Evaluation(4, f1, 17.5f, 17.0f, 24.0f, 12.5f, 13.0f, LocalDate.of(2025, 4, 8))); } catch (Exception ignored) {}
-        st4.registerProject(p4); service.addProject(p4);
+        p4.addTechnology("Java");
+        p4.addTechnology("AWS S3");
+        p4.addTechnology("Docker");
+        p4.addTechnology("MySQL");
+        p4.addMilestone(new Milestone(14, "Cryptographic Protocol Specification", LocalDate.of(2025, 2, 5), "Completed",
+                "AES verified"));
+        p4.addMilestone(new Milestone(15, "Storage Node Replication Engine", LocalDate.of(2025, 3, 1), "Completed",
+                "Raft consensus"));
+        p4.addMilestone(new Milestone(16, "AWS Deployment & Benchmark", LocalDate.of(2025, 3, 25), "Delayed",
+                "Budget approved"));
+        p4.addMilestone(
+                new Milestone(17, "Documentation and Viva", LocalDate.of(2025, 4, 20), "Pending", "Draft ready"));
+        try {
+            p4.setEvaluation(new Evaluation(4, f1, 17.5f, 17.0f, 24.0f, 12.5f, 13.0f, LocalDate.of(2025, 4, 8)));
+        } catch (Exception ignored) {
+        }
+        st4.registerProject(p4);
+        service.addProject(p4);
 
         Project p5 = new Project(5, "Smart Campus Navigation & Attendance App", "Mobile App",
                 "Cross-platform Flutter application utilizing BLE beacons for indoor campus navigation and geo-fenced attendance.",
                 LocalDate.of(2025, 1, 15), LocalDate.of(2025, 4, 22), "Completed", f4);
-        p5.addTechnology("Flutter"); p5.addTechnology("Dart"); p5.addTechnology("Firebase"); p5.addTechnology("SQLite");
-        p5.addMilestone(new Milestone(18, "Campus BLE Beacon Floor Mapping", LocalDate.of(2025, 2, 2), "Completed", "4 floors done"));
-        p5.addMilestone(new Milestone(19, "Flutter Navigation UI Implementation", LocalDate.of(2025, 2, 28), "Completed", "Turn-by-turn"));
-        p5.addMilestone(new Milestone(20, "Geo-Fenced Attendance System", LocalDate.of(2025, 3, 20), "Completed", "50 students tested"));
-        p5.addMilestone(new Milestone(21, "Field Deployment & Viva", LocalDate.of(2025, 4, 15), "Completed", "HOD demo passed"));
-        try { p5.setEvaluation(new Evaluation(5, f4, 19.0f, 19.0f, 28.0f, 14.0f, 15.0f, LocalDate.of(2025, 4, 16))); } catch (Exception ignored) {}
-        st5.registerProject(p5); service.addProject(p5);
+        p5.addTechnology("Flutter");
+        p5.addTechnology("Dart");
+        p5.addTechnology("Firebase");
+        p5.addTechnology("SQLite");
+        p5.addMilestone(new Milestone(18, "Campus BLE Beacon Floor Mapping", LocalDate.of(2025, 2, 2), "Completed",
+                "4 floors done"));
+        p5.addMilestone(new Milestone(19, "Flutter Navigation UI Implementation", LocalDate.of(2025, 2, 28),
+                "Completed", "Turn-by-turn"));
+        p5.addMilestone(new Milestone(20, "Geo-Fenced Attendance System", LocalDate.of(2025, 3, 20), "Completed",
+                "50 students tested"));
+        p5.addMilestone(new Milestone(21, "Field Deployment & Viva", LocalDate.of(2025, 4, 15), "Completed",
+                "HOD demo passed"));
+        try {
+            p5.setEvaluation(new Evaluation(5, f4, 19.0f, 19.0f, 28.0f, 14.0f, 15.0f, LocalDate.of(2025, 4, 16)));
+        } catch (Exception ignored) {
+        }
+        st5.registerProject(p5);
+        service.addProject(p5);
     }
 
     private static void runAutomatedDemonstration(ProjectTrackingService service) {
         System.out.println("================================================================================");
-        System.out.println(" VELALAR COLLEGE OF ENGINEERING AND TECHNOLOGY (AUTONOMOUS), ERODE");
-        System.out.println(" DEPARTMENT OF INFORMATION TECHNOLOGY - REGULATION R2025");
-        System.out.println(" COURSE: 25ITT32 - JAVA PROGRAMMING");
-        System.out.println(" SCENARIO 2: STUDENT PROJECT AND SKILL TRACKING SYSTEM");
-        System.out.println(" TARGET REGISTER NUMBERS: 2, 32, 62, 92, L2");
+        System.out.println("STUDENT PROJECT AND SKILL TRACKING SYSTEM");
         System.out.println("================================================================================\n");
 
         MilestoneMonitorThread auditThread = new MilestoneMonitorThread(new ArrayList<>(service.getAllProjects()));
@@ -541,7 +697,8 @@ public class Main {
         System.out.println("--------------------------------------------------------------------------------");
         try {
             System.out.print("[TEST 1] Attempting to set rubric marks beyond 20 for Requirement Analysis (25/20)... ");
-            new Evaluation(99, new Faculty(1, "Guide", "guide@vcet.ac.in", "IT"), 25.0f, 15.0f, 25.0f, 10.0f, 10.0f, LocalDate.now());
+            new Evaluation(99, new Faculty(1, "Guide", "guide@vcet.ac.in", "IT"), 25.0f, 15.0f, 25.0f, 10.0f, 10.0f,
+                    LocalDate.now());
         } catch (InvalidMarkException ex) {
             System.out.println("CAUGHT EXPECTED EXCEPTION: " + ex.getMessage());
         }
@@ -591,9 +748,12 @@ public class Main {
             g2.setColor(new Color(30, 41, 59));
             g2.fillRect(0, 0, width, 45);
 
-            g2.setColor(new Color(239, 68, 68)); g2.fillOval(18, 16, 13, 13);
-            g2.setColor(new Color(245, 158, 11)); g2.fillOval(38, 16, 13, 13);
-            g2.setColor(new Color(34, 197, 94));  g2.fillOval(58, 16, 13, 13);
+            g2.setColor(new Color(239, 68, 68));
+            g2.fillOval(18, 16, 13, 13);
+            g2.setColor(new Color(245, 158, 11));
+            g2.fillOval(38, 16, 13, 13);
+            g2.setColor(new Color(34, 197, 94));
+            g2.fillOval(58, 16, 13, 13);
 
             g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
             g2.setColor(new Color(203, 213, 225));
@@ -609,9 +769,11 @@ public class Main {
                     g2.setColor(new Color(56, 189, 248));
                 } else if (line.contains("===") || line.contains("---")) {
                     g2.setColor(new Color(71, 85, 105));
-                } else if (line.contains("[1]") || line.contains("[2]") || line.contains("[3]") || line.contains("[4]") || line.contains("[5]")) {
+                } else if (line.contains("[1]") || line.contains("[2]") || line.contains("[3]") || line.contains("[4]")
+                        || line.contains("[5]")) {
                     g2.setColor(new Color(250, 204, 21));
-                } else if (line.contains("CAUGHT EXPECTED") || line.contains("Completed") || line.contains("Advanced")) {
+                } else if (line.contains("CAUGHT EXPECTED") || line.contains("Completed")
+                        || line.contains("Advanced")) {
                     g2.setColor(new Color(74, 222, 128));
                 } else if (line.contains("Delayed") || line.contains("In-Progress")) {
                     g2.setColor(new Color(251, 146, 60));
